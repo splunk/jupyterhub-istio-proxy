@@ -1,0 +1,32 @@
+builds:
+  - id: jupyterhub-istio-proxy
+    binary: jupyterhub-istio-proxy
+    main: ./
+    ldflags:
+      - -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.goVersion={{.Env.GO_VERSION}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+archives:
+  - format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+
+checksum:
+  name_template: "sha256-checksums.txt"
+snapshot:
+  name_template: "{{.Version}}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "README.md"
+      - ".gitignore"
+      - Merge pull request
+      - Merge branch
