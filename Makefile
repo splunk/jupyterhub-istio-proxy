@@ -19,3 +19,8 @@ check-format:
 			$(foreach file,$(unformatted),$(\n)    gofmt -w $(file))$(\n)),\
 		@echo All files are well formatted.\
 	)
+
+.PHONY: publish-coverage
+publish-coverage:
+	# publishes results from coverage.txt
+	curl -s https://codecov.io/bash | bash
