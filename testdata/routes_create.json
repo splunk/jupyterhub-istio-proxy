@@ -1,0 +1,8 @@
+{
+  "target": "http://jupyter-hsm:8888",
+  "jupyterhub": true,
+  "custom": {
+    "name": "hsm"
+  },
+  "someother": "something"
+}
