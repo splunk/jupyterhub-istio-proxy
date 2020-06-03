@@ -4,6 +4,6 @@ WORKDIR /proxy
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build . && chmod +x jupyterhub-istio-proxy
 
 FROM gcr.io/distroless/static-debian10:nonroot
-COPY --from=builder /proxy/jupyterhub-istio /proxy/jupyterhub-istio
-ENTRYPOINT ["/proxy/jupyterhub-istio"]
-CMD [ "/proxy/jupyterhub-istio" ]
+COPY --from=builder /proxy/jupyterhub-istio-proxy /proxy/jupyterhub-istio-proxy
+ENTRYPOINT ["/proxy/jupyterhub-istio-proxy"]
+CMD [ "/proxy/jupyterhub-istio-proxy" ]
