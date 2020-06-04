@@ -28,5 +28,8 @@ changelog:
     exclude:
       - "README.md"
       - ".gitignore"
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
       - Merge pull request
       - Merge branch
