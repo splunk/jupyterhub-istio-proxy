@@ -3,7 +3,7 @@ test: lint
 	go test -coverprofile=coverage.txt -covermode=atomic -race ./...
 
 .PHONY: lint
-lint: vet check-format
+lint: check-format vet
 	golangci-lint run
 
 .PHONY: vet
@@ -24,3 +24,7 @@ check-format:
 publish-coverage:
 	# publishes results from coverage.txt
 	curl -s https://codecov.io/bash | bash
+
+.PHONY: install-ci
+install-ci:
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(GOPATH)/bin v1.27.0
