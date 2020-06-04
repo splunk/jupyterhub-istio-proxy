@@ -25,6 +25,7 @@ jobs:
           echo "::set-env name=GOPATH::$HOME/go"
           echo "::set-env name=GO_VERSION::$(go version | awk '{ print $3}' | sed 's/^go//')"
           echo "::add-path::$HOME/go/bin"
+          make install-ci
 
       - name: Test
         run: make test
