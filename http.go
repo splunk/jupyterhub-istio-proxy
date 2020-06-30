@@ -64,7 +64,7 @@ func registerRoutes(r *gin.Engine, ic istioer, apiToken string) {
 
 	authorized.DELETE("/api/routes/*path", func(c *gin.Context) {
 		path := c.Param("path")
-		if err := ic.deleteRoute(getVirtualServiceNameWithPrefix(path)); err != nil {
+		if err := ic.deleteRoute(virtualServiceNameWithPrefix(path)); err != nil {
 			log.Println(err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"error": "failed to delete route",

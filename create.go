@@ -38,14 +38,14 @@ const (
 
 func (i *istioClient) createVirtualService(r route) error {
 	log.Println("creating route: ", r)
-	var annotations, err = getAnnotationForRoute(r)
+	var annotations, err = annotationForRoute(r)
 	if err != nil {
 		return err
 	}
 	destinationHost, destinationPort := r.splitTarget()
 	destinationHost = fmt.Sprintf("%s.%s.svc.cluster.local", destinationHost, i.namespace)
-	vsName := getVirtualServiceNameWithPrefix(r.RouteSpec)
-	vs := getVirtualService(vsName, i.gateway, i.host, destinationHost, destinationPort, r.RouteSpec, annotations)
+	vsName := virtualServiceNameWithPrefix(r.RouteSpec)
+	vs := virtualService(vsName, i.gateway, i.host, destinationHost, destinationPort, r.RouteSpec, annotations)
 
 	_, err = i.NetworkingV1alpha3().VirtualServices(i.namespace).Create(context.Background(), vs, metav1.CreateOptions{})
 	if err != nil {
@@ -59,7 +59,7 @@ func (i *istioClient) createVirtualService(r route) error {
 	log.Println("virtual service created")
 	if i.waitForWarmup {
 		log.Println("waiting for warmup")
-		err = warmup(vsName, getWarmupURL(i.host, r.RouteSpec))
+		err = warmup(vsName, warmupURL(i.host, r.RouteSpec))
 	}
 	if err != nil {
 		log.Printf("warming up the servers did not return after %d tries. Continuing despite: %v", maxRetries+1, err)
@@ -68,23 +68,23 @@ func (i *istioClient) createVirtualService(r route) error {
 	return nil
 }
 
-func getVirtualServiceNameWithPrefix(name string) string {
+func virtualServiceNameWithPrefix(name string) string {
 	sum := sha256.Sum256([]byte(name))
-	return fmt.Sprintf("%s-%x", getVirtualServicePrefix(), sum)
+	return fmt.Sprintf("%s-%x", virtualServicePrefix(), sum)
 }
 
-func getVirtualServicePrefix() string {
+func virtualServicePrefix() string {
 	if vsNamePrefix != "" {
 		return vsNamePrefix
 	}
 	return virtualServicePrefixDefault
 }
 
-func getWarmupURL(host string, p string) string {
+func warmupURL(host string, p string) string {
 	return fmt.Sprintf("https://%s/", path.Join(host, p))
 }
 
-func getAnnotationForRoute(r route) (map[string]string, error) {
+func annotationForRoute(r route) (map[string]string, error) {
 	var e, err = encodeRoute(r)
 	if err != nil {
 		return nil, err
@@ -120,7 +120,7 @@ func warmup(name string, url string) error {
 	return backoff.Retry(fetchURL, bf)
 }
 
-func getVirtualService(name string, gateway string, host string, destinationHost string, destinationPort uint32, route string, annotations map[string]string) *networkingv1alpha3.VirtualService {
+func virtualService(name string, gateway string, host string, destinationHost string, destinationPort uint32, route string, annotations map[string]string) *networkingv1alpha3.VirtualService {
 	return &networkingv1alpha3.VirtualService{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        name,

@@ -8,6 +8,6 @@ var (
 	goVersion = "Unknown"
 )
 
-func getVersionInfo() string {
+func versionInfo() string {
 	return fmt.Sprintf("Version: %s Commit: %s GoVersion: %s", version, commit, goVersion)
 }

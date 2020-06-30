@@ -49,5 +49,5 @@ func newIstioClient(namespace string, gateway string, host string, waitForWarmup
 	return &istioClient{Clientset: ic, namespace: namespace, gateway: gateway, host: host, waitForWarmup: waitForWarmup}, nil
 }
 func virtualServiceAnnotationNameWithPrefix() string {
-	return fmt.Sprintf("%s.splunk.io/proxy-data", getVirtualServicePrefix())
+	return fmt.Sprintf("%s.splunk.io/proxy-data", virtualServicePrefix())
 }

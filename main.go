@@ -45,7 +45,7 @@ const (
 )
 
 func main() {
-	log.Println(getVersionInfo())
+	log.Println(versionInfo())
 	gin.SetMode(gin.ReleaseMode)
 
 	sharedAPIToken = os.Getenv(proxyAuthTokenEnvKey)
