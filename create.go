@@ -70,14 +70,14 @@ func (i *istioClient) createVirtualService(r route) error {
 
 func getVirtualServiceNameWithPrefix(name string) string {
 	sum := sha256.Sum256([]byte(name))
-	return fmt.Sprintf("%s-%x", getVsNamePrefix(), sum)
+	return fmt.Sprintf("%s-%x", getVirtualServicePrefix(), sum)
 }
 
-func getVsNamePrefix() string {
+func getVirtualServicePrefix() string {
 	if vsNamePrefix != "" {
 		return vsNamePrefix
 	}
-	return vsNamePrefixDefault
+	return virtualServicePrefixDefault
 }
 
 func getWarmupURL(host string, p string) string {
@@ -90,7 +90,7 @@ func getAnnotationForRoute(r route) (map[string]string, error) {
 		return nil, err
 	}
 	var m = make(map[string]string)
-	m[jupyterhubAnnotationConstant] = e
+	m[virtualServiceAnnotationNameWithPrefix()] = e
 	return m, nil
 }
 

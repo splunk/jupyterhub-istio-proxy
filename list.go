@@ -30,7 +30,7 @@ func (i *istioClient) listRegisteredRoutes() (map[string]interface{}, error) {
 	var routes = make(map[string]interface{})
 	for i := range vsList.Items {
 		vs := vsList.Items[i]
-		if a, ok := vs.Annotations[jupyterhubAnnotationConstant]; ok {
+		if a, ok := vs.Annotations[virtualServiceAnnotationNameWithPrefix()]; ok {
 			rd, err := decodeRoute(a)
 			if err != nil {
 				log.Printf("error decoding annotation but continuing: %s\n", vs.Name)
