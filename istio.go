@@ -16,12 +16,10 @@ limitations under the License.
 package main
 
 import (
+	"fmt"
+
 	versionedclient "istio.io/client-go/pkg/clientset/versioned"
 	"k8s.io/client-go/rest"
-)
-
-const (
-	jupyterhubAnnotationConstant = "jupyter.splunk.io/proxy-data"
 )
 
 type istioer interface {
@@ -49,4 +47,7 @@ func newIstioClient(namespace string, gateway string, host string, waitForWarmup
 		return nil, err
 	}
 	return &istioClient{Clientset: ic, namespace: namespace, gateway: gateway, host: host, waitForWarmup: waitForWarmup}, nil
+}
+func virtualServiceAnnotationNameWithPrefix() string {
+	return fmt.Sprintf("%s.splunk.io/proxy-data", getVirtualServicePrefix())
 }

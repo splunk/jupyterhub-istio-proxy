@@ -35,13 +35,13 @@ var waitForWarmup bool
 var vsNamePrefix string
 
 const (
-	gatewayEnvKey        = "ISTIO_GATEWAY"
-	proxyAuthTokenEnvKey = "CONFIGPROXY_AUTH_TOKEN"
-	subDomainHostEnvKey  = "SUB_DOMAIN_HOST"
-	namespaceKey         = "K8S_NAMESPACE"
-	waitForWarmupKey     = "WAIT_FOR_WARMUP"
-	vsNamePrefixKey      = "VS_NAME_PREFIX"
-	vsNamePrefixDefault  = "jupyter"
+	gatewayEnvKey               = "ISTIO_GATEWAY"
+	proxyAuthTokenEnvKey        = "CONFIGPROXY_AUTH_TOKEN"
+	subDomainHostEnvKey         = "SUB_DOMAIN_HOST"
+	namespaceKey                = "K8S_NAMESPACE"
+	waitForWarmupKey            = "WAIT_FOR_WARMUP"
+	virtualServicePrefixKey     = "VIRTUAL_SERVICE_PREFIX"
+	virtualServicePrefixDefault = "jupyter"
 )
 
 func main() {
@@ -71,8 +71,8 @@ func main() {
 	}
 	waitForWarmup = os.Getenv(waitForWarmupKey) != "false"
 	var ok bool
-	if vsNamePrefix, ok = os.LookupEnv(vsNamePrefixKey); !ok {
-		vsNamePrefix = vsNamePrefixDefault
+	if vsNamePrefix, ok = os.LookupEnv(virtualServicePrefixKey); !ok || vsNamePrefix == "" {
+		vsNamePrefix = virtualServicePrefixDefault
 	}
 	var ic istioer
 	ic, err = newIstioClient(namespace, gateway, subDomainHost, waitForWarmup)
