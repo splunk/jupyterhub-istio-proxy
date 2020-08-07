@@ -10,7 +10,8 @@ The following requests are supported:
 Since the proxy is stateless, it can be scaled horizontally. Multiple replicas can be used to ensure uptime during deployments and handle pod failure.
 
 The proxy can be deployed to a Kubernetes namespace running Jupyterhub by applying the following config:
-Change SUB_DOMAIN_HOST to a value to a hostname where jupyterhub is hosted.
+Change SUB_DOMAIN_HOST to a value to a hostname where jupyterhub is hosted. The ISTIO_GATEWAY value should be set to
+the gateway which handles traffic for jupyterhub.
 
 ```yaml
 ---
