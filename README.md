@@ -70,7 +70,7 @@ spec:
           value: jupyterhub
         - name: WAIT_FOR_WARMUP
           value: "true"
-        image: splunk/jupyterhub-istio-proxy:0.0.1
+        image: splunk/jupyterhub-istio-proxy:0.0.2
         imagePullPolicy: IfNotPresent
         name: proxy
         ports:
