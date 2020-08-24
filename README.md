@@ -9,6 +9,19 @@ The following requests are supported:
 
 Since the proxy is stateless, it can be scaled horizontally. Multiple replicas can be used to ensure uptime during deployments and handle pod failure.
 
+## Prerequisites
+
+In order to use the `jupyterhub-istio-proxy` the following prerequisites need to be met.
+1. The Kubernetes cluster should have istio enabled.
+2. If an [istio gateway](https://istio.io/latest/docs/reference/config/networking/gateway/) is used, it should be setup to handle traffic for the FQDN where the jupyterhub instance is exposed.
+3. The service account used for deploying the `jupyterhub-istio-proxy` should have ability to list, get, create and delete istio virtual services in the namespace where the deployment is done. Refer [Kubernetes RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole) for details.
+
+### Difference to the configurable-http-proxy
+
+Unlike the default `configurable-http-proxy` that ships with istio, the traffic is not routed through the proxy itself. The proxy configures istio to handle all traffic to the notebook servers as well as Jupyterhub. As a result, the `proxy-public` service is not needed when using `jupyterhub-istio-proxy`
+
+## Deployment
+
 The proxy can be deployed to a Kubernetes namespace running Jupyterhub by applying the following config:
 Change SUB_DOMAIN_HOST to a value to a hostname where jupyterhub is hosted. The ISTIO_GATEWAY value should be set to
 the gateway which handles traffic for jupyterhub.
@@ -75,7 +88,7 @@ spec:
         name: proxy
         ports:
         - containerPort: 8000
-          name: proxy-public
+          name: proxy-api
           protocol: TCP
         resources:
           limits:
