@@ -120,6 +120,8 @@ spec:
   type: ClusterIP
 
 ```
+Jupyterhub user pod creation flow when using `jupyterhub-istio-proxy`.
+![jupyterhub-istio-proxy](http://www.plantuml.com/plantuml/png/RP4nJmCn38Nt_8gdxZ2Z6r1FB5Gi5GWnejp5Y8XoYHodel-UE8IhGfbEv_UzPyVU9h4i-VDWnba2upaHmoRayZMnI7xsqIw2pNsUDggyvwaNzXo-JXZtkof7_NkrqVVGGvw85n9AA_bnaofdj1UkRZLvm9FEWr8v4fjIKQ6H0-wOh11YS3_IFvew_KocrTVSui5S4TTYpwCE69t3OyX2PYrsZLNtINp0qNCMUxZeq-VjVbd9PtRjty0BrulrWhV0O1q54Z0HYiUTUei-g35_dgIhB3kisuEUjcZNO7AUQHPDLA8kS4kBAtV_1W00)
 
 # Testing setup
 
