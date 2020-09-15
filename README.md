@@ -18,7 +18,7 @@ In order to use the `jupyterhub-istio-proxy` the following prerequisites need to
 
 ### Difference to the configurable-http-proxy
 
-Unlike the default `configurable-http-proxy` that ships with istio, the traffic is not routed through the proxy itself. The proxy configures istio to handle all traffic to the notebook servers as well as Jupyterhub. As a result, the `proxy-public` service is not needed when using `jupyterhub-istio-proxy`
+Unlike the default `configurable-http-proxy` that ships with istio, the traffic is not routed through the proxy itself. The proxy configures istio to handle all traffic to the notebook servers as well as Jupyterhub. As a result, the `proxy-public` service is not needed when using `jupyterhub-istio-proxy`. For more information see https://medium.com/@harsimran.maan/running-jupyterhub-with-istio-service-mesh-on-kubernetes-a-troubleshooting-journey-707039f36a7b
 
 ## Deployment
 
@@ -26,102 +26,10 @@ The proxy can be deployed to a Kubernetes namespace running Jupyterhub by applyi
 Change SUB_DOMAIN_HOST to a value to a hostname where jupyterhub is hosted. The ISTIO_GATEWAY value should be set to
 the gateway which handles traffic for jupyterhub.
 
-```yaml
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: jupyterhub
-    component: proxy
-  name: proxy
-spec:
-  replicas: 3
-  revisionHistoryLimit: 1
-  selector:
-    matchLabels:
-      app: jupyterhub
-      component: proxy
-  strategy:
-    type: RollingUpdate
-  template:
-    metadata:
-      labels:
-        app: jupyterhub
-        component: proxy
-    spec:
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: name
-                  operator: In
-                  values:
-                  - proxy
-              topologyKey: kubernetes.io/hostname
-            weight: 100
-      containers:
-      - command:
-        - /proxy/jupyterhub-istio-proxy
-        env:
-        - name: CONFIGPROXY_AUTH_TOKEN
-          valueFrom:
-            secretKeyRef:
-              key: proxy.token
-              name: hub-secret
-        - name: ISTIO_GATEWAY
-          value: istio-gateway/jupyterhub-gateway
-        - name: K8S_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: SUB_DOMAIN_HOST
-          value: example.com
-        - name: VIRTUAL_SERVICE_PREFIX
-          value: jupyterhub
-        - name: WAIT_FOR_WARMUP
-          value: "true"
-        image: splunk/jupyterhub-istio-proxy:0.0.2
-        imagePullPolicy: IfNotPresent
-        name: proxy
-        ports:
-        - containerPort: 8000
-          name: proxy-api
-          protocol: TCP
-        resources:
-          limits:
-            cpu: "1"
-            memory: 256M
-          requests:
-            cpu: 100m
-            memory: 256M
-        securityContext:
-          allowPrivilegeEscalation: false
-      nodeSelector: {}
-      securityContext:
-        runAsNonRoot: true
-      terminationGracePeriodSeconds: 60
+<script src="https://gist.github.com/harsimranmaan/2e77cf65019439052122b7b89f926686.js"></script>
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: proxy-api
-spec:
-  ports:
-  - name: http-proxy-api
-    port: 80
-    protocol: TCP
-    targetPort: 8000
-  selector:
-    component: proxy
-  type: ClusterIP
-
-```
 Jupyterhub user pod creation flow when using `jupyterhub-istio-proxy`.
-![jupyterhub-istio-proxy](http://www.plantuml.com/plantuml/png/jP31IWCn48RlUOgXT-rLUf0MBnOlHH6FajsC6DnkmcHIxDkxaxY3MH54yBZxV_zavjicjiJvE9XTpu7WCI61JP0JaebJv7iVxSYmkitTIfBNtBN1WSBx6NQ7VOcZV3tRw5leBdT88p8c9T-kKk6CcKR2nJLeTGCxvs0Dzo4p6lqjZ9IKy8bzW9Edp7Q0X7JoFS9B85YRJt0nTpytE7zfz8IMqUbBozQJzLp70ibAm04wXAdbpar9v6oKciUAImqVn7VHMvv7cg_NosvAhI8nk9f_1vfx5QwGxgA1BlE3Q-7-wBjq_yctZFwDyuPSd2h9vBt8XYJwqLq2eVE4FSlSUi4MHvUFmmS0)
+![jupyterhub-istio-proxy](http://www.plantuml.com/plantuml/png/jPD1IyGm48Nl-HN3tkjUPG-onOkB5r74ewJDYD6r2PF9Ol-zq-bkR2k227jgoVlUPDwZtIQsnFbZR-gM0y5ZGWAR8ClJH95ywwFj65OtkLaDocjkvi9RZZqZoNdb4_jGHGgVlRBwzcoZdpjkSuFK8ME2-cwdvFjbKiuOcGFLrRTr0xLpi8Rxa1bDEHP6JONGk-7WARFTGq8w-1RXHJAjpH5SpDsT79mdZfRGChfoqzBrP3sFOu66bO03D0ZYSltS94asXJgD7OejuiDGldQjroDf-ccoQxMDI0nkr7y2ixm57g6oIn7AChzqhTp_-bRlUVhMqN_hV48keWwAzAvbWtxxw2w0q7d2bcNkCS4MEoT_nHS0)
 
 # Testing setup
 
