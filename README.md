@@ -26,7 +26,86 @@ The proxy can be deployed to a Kubernetes namespace running Jupyterhub by applyi
 Change SUB_DOMAIN_HOST to a value to a hostname where jupyterhub is hosted. The ISTIO_GATEWAY value should be set to
 the gateway which handles traffic for jupyterhub.
 
-<script src="https://gist.github.com/harsimranmaan/2e77cf65019439052122b7b89f926686.js"></script>
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: jupyterhub
+    component: proxy
+  name: proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyterhub
+      component: proxy
+      release: RELEASE-NAME
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: jupyterhub
+        component: proxy
+        release: RELEASE-NAME
+    spec:
+      containers:
+        - command:
+            - /proxy/jupyterhub-istio-proxy
+          env:
+            - name: CONFIGPROXY_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: proxy.token
+                  name: hub-secret
+            - name: ISTIO_GATEWAY
+              value: jupyterhub-gateway
+            - name: K8S_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SUB_DOMAIN_HOST
+              value: '*'
+            - name: VIRTUAL_SERVICE_PREFIX
+              value: jupyterhub
+            - name: WAIT_FOR_WARMUP
+              value: "true"
+          image: splunk/jupyterhub-istio-proxy:0.0.2
+          imagePullPolicy: IfNotPresent
+          name: proxy
+          ports:
+            - containerPort: 8000
+              name: proxy-api
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 256M
+            requests:
+              cpu: 100m
+              memory: 256M
+          securityContext:
+            allowPrivilegeEscalation: false
+      securityContext:
+        runAsNonRoot: true
+      terminationGracePeriodSeconds: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-api
+spec:
+  ports:
+    - name: http-proxy-api
+      port: 8001
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    component: proxy
+  type: ClusterIP
+---
+```
 
 Jupyterhub user pod creation flow when using `jupyterhub-istio-proxy`.
 ![jupyterhub-istio-proxy](http://www.plantuml.com/plantuml/png/jPD1IyGm48Nl-HN3tkjUPG-onOkB5r74ewJDYD6r2PF9Ol-zq-bkR2k227jgoVlUPDwZtIQsnFbZR-gM0y5ZGWAR8ClJH95ywwFj65OtkLaDocjkvi9RZZqZoNdb4_jGHGgVlRBwzcoZdpjkSuFK8ME2-cwdvFjbKiuOcGFLrRTr0xLpi8Rxa1bDEHP6JONGk-7WARFTGq8w-1RXHJAjpH5SpDsT79mdZfRGChfoqzBrP3sFOu66bO03D0ZYSltS94asXJgD7OejuiDGldQjroDf-ccoQxMDI0nkr7y2ixm57g6oIn7AChzqhTp_-bRlUVhMqN_hV48keWwAzAvbWtxxw2w0q7d2bcNkCS4MEoT_nHS0)
