@@ -35,7 +35,7 @@ metadata:
     component: proxy
   name: proxy
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: jupyterhub
@@ -50,6 +50,18 @@ spec:
         component: proxy
         release: RELEASE-NAME
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: name
+                  operator: In
+                  values:
+                  - proxy
+              topologyKey: kubernetes.io/hostname
+            weight: 100
       containers:
         - command:
             - /proxy/jupyterhub-istio-proxy
