@@ -18,7 +18,7 @@ In order to use the `jupyterhub-istio-proxy` the following prerequisites need to
 
 ### Difference to the configurable-http-proxy
 
-Unlike the default `configurable-http-proxy` that ships with istio, the traffic is not routed through the proxy itself. The proxy configures istio to handle all traffic to the notebook servers as well as Jupyterhub. As a result, the `proxy-public` service is not needed when using `jupyterhub-istio-proxy`. For more information see https://medium.com/@harsimran.maan/running-jupyterhub-with-istio-service-mesh-on-kubernetes-a-troubleshooting-journey-707039f36a7b
+Unlike the default `configurable-http-proxy` that ships with Jupyterhub, the traffic is not routed through the proxy itself. The proxy configures istio to handle all traffic to the notebook servers as well as Jupyterhub. As a result, the `proxy-public` service is not needed when using `jupyterhub-istio-proxy`. For more information see https://medium.com/@harsimran.maan/running-jupyterhub-with-istio-service-mesh-on-kubernetes-a-troubleshooting-journey-707039f36a7b
 
 ## Deployment
 
