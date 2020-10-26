@@ -15,8 +15,7 @@ jobs:
         with:
           go-version: 1.15
         id: go
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: Prepare env
         run: echo "GO_VERSION=$(go version | awk '{ print $3}' | sed 's/^go//')" >> $GITHUB_ENV
       - name: Login to docker
