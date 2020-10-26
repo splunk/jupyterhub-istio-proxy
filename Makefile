@@ -4,6 +4,9 @@ test: lint
 
 .PHONY: lint
 lint: check-format vet
+
+.PHONY: lint-local
+lint-local: lint
 	golangci-lint run
 
 .PHONY: vet
