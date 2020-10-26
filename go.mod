@@ -7,6 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/golang/mock v1.4.4
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
+	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/net v0.0.0-20200506145744-7e3656a0809f // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect

@@ -4,6 +4,8 @@ test: lint
 
 .PHONY: lint
 lint: check-format vet
+	go get golang.org/x/lint/golint
+	golint -set_exit_status=1 ./...
 
 .PHONY: lint-local
 lint-local: lint
