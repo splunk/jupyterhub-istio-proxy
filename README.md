@@ -122,10 +122,18 @@ spec:
 Jupyterhub user pod creation flow when using `jupyterhub-istio-proxy`.
 ![jupyterhub-istio-proxy](http://www.plantuml.com/plantuml/png/jPD1IyGm48Nl-HN3tkjUPG-onOkB5r74ewJDYD6r2PF9Ol-zq-bkR2k227jgoVlUPDwZtIQsnFbZR-gM0y5ZGWAR8ClJH95ywwFj65OtkLaDocjkvi9RZZqZoNdb4_jGHGgVlRBwzcoZdpjkSuFK8ME2-cwdvFjbKiuOcGFLrRTr0xLpi8Rxa1bDEHP6JONGk-7WARFTGq8w-1RXHJAjpH5SpDsT79mdZfRGChfoqzBrP3sFOu66bO03D0ZYSltS94asXJgD7OejuiDGldQjroDf-ccoQxMDI0nkr7y2ixm57g6oIn7AChzqhTp_-bRlUVhMqN_hV48keWwAzAvbWtxxw2w0q7d2bcNkCS4MEoT_nHS0)
 
-# Testing setup
+## Dev Setup
+
+The project requires Go 1.15.3+. Run the tests
+
+```bash
+make test
+```
+
+## Testing setup
 
 https://github.com/golang/mock is used for creating mocks for testing.
 
 ```bash
-mockgen --source=istio.go -destination=istio_mock_test.go -write_package_comment -package=main
+mockgen --source=proxy/istio.go -destination=proxy/istio_mock_test.go -write_package_comment -package=proxy
 ```
