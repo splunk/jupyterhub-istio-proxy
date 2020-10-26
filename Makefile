@@ -20,11 +20,6 @@ check-format:
 		@echo All files are well formatted.\
 	)
 
-.PHONY: publish-coverage
-publish-coverage:
-	# publishes results from coverage.txt
-	curl -s https://codecov.io/bash | bash
-
 .PHONY: install-ci
 install-ci:
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(GOPATH)/bin v1.30.0
