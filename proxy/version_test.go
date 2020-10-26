@@ -13,16 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
 
-import "fmt"
+package proxy
 
-var (
-	version   = "dev"
-	commit    = "HEAD"
-	goVersion = "Unknown"
+import (
+	"testing"
 )
 
-func versionInfo() string {
-	return fmt.Sprintf("Version: %s Commit: %s GoVersion: %s", version, commit, goVersion)
+func TestVersionInfo(t *testing.T) {
+	actual := VersionInfo()
+	expected := "Version: dev Commit: HEAD GoVersion: Unknown"
+	if expected != actual {
+		t.Errorf("expected %q, found %q", expected, actual)
+	}
 }

@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
+
+package proxy
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -24,7 +24,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func registerRoutes(r *gin.Engine, ic istioer, apiToken string) {
+// RegisterRoutes bootstraps http routes
+func RegisterRoutes(r *gin.Engine, ic Istioer, apiToken string) {
 	authorized := r.Group("/")
 	authorized.Use(authorizedWithToken(apiToken))
 	authorized.GET("/ping", func(c *gin.Context) {
@@ -64,7 +65,7 @@ func registerRoutes(r *gin.Engine, ic istioer, apiToken string) {
 
 	authorized.DELETE("/api/routes/*path", func(c *gin.Context) {
 		path := c.Param("path")
-		if err := ic.deleteRoute(virtualServiceNameWithPrefix(path)); err != nil {
+		if err := ic.deleteRoute(path); err != nil {
 			log.Println(err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"error": "failed to delete route",
@@ -88,11 +89,4 @@ func authorizedWithToken(apiToken string) gin.HandlerFunc {
 		})
 
 	}
-}
-
-func validateRequired(paramName string, paramValue string) error {
-	if paramValue == "" {
-		return fmt.Errorf("missing required param %s", paramName)
-	}
-	return nil
 }

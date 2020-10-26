@@ -17,6 +17,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -25,6 +26,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/splunk/jupyterhub-istio-proxy/proxy"
 )
 
 var sharedAPIToken string
@@ -45,7 +47,7 @@ const (
 )
 
 func main() {
-	log.Println(versionInfo())
+	log.Println(proxy.VersionInfo())
 	gin.SetMode(gin.ReleaseMode)
 
 	sharedAPIToken = os.Getenv(proxyAuthTokenEnvKey)
@@ -74,13 +76,13 @@ func main() {
 	if vsNamePrefix, ok = os.LookupEnv(virtualServicePrefixKey); !ok || vsNamePrefix == "" {
 		vsNamePrefix = virtualServicePrefixDefault
 	}
-	var ic istioer
-	ic, err = newIstioClient(namespace, gateway, subDomainHost, waitForWarmup)
+	var ic proxy.Istioer
+	ic, err = proxy.NewIstioClient(namespace, gateway, subDomainHost, waitForWarmup, vsNamePrefix)
 	if err != nil {
 		log.Fatalf("failed to create istio client: %s\n", err)
 	}
 	r := gin.Default()
-	registerRoutes(r, ic, sharedAPIToken)
+	proxy.RegisterRoutes(r, ic, sharedAPIToken)
 
 	srv := &http.Server{
 		Addr:    ":8000",
@@ -105,4 +107,11 @@ func main() {
 	}
 
 	log.Println("Server exiting")
+}
+
+func validateRequired(paramName string, paramValue string) error {
+	if paramValue == "" {
+		return fmt.Errorf("missing required param %s", paramName)
+	}
+	return nil
 }

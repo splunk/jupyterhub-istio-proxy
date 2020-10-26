@@ -13,7 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
+
+package proxy
 
 import (
 	"context"
@@ -22,15 +23,14 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (i *istioClient) listRegisteredRoutes() (map[string]interface{}, error) {
-	vsList, err := i.NetworkingV1alpha3().VirtualServices(namespace).List(context.Background(), metav1.ListOptions{})
+func (i *IstioClient) listRegisteredRoutes() (map[string]interface{}, error) {
+	vsList, err := i.NetworkingV1alpha3().VirtualServices(i.namespace).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 	var routes = make(map[string]interface{})
-	for i := range vsList.Items {
-		vs := vsList.Items[i]
-		if a, ok := vs.Annotations[virtualServiceAnnotationNameWithPrefix()]; ok {
+	for _, vs := range vsList.Items {
+		if a, ok := vs.Annotations[i.virtualServiceAnnotationNameWithPrefix()]; ok {
 			rd, err := decodeRoute(a)
 			if err != nil {
 				log.Printf("error decoding annotation but continuing: %s\n", vs.Name)

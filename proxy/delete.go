@@ -13,16 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
+
+package proxy
 
 import (
-	"testing"
+	"context"
+
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func TestVersionInfo(t *testing.T) {
-	actual := versionInfo()
-	expected := "Version: dev Commit: HEAD GoVersion: Unknown"
-	if expected != actual {
-		t.Errorf("expected %q, found %q", expected, actual)
-	}
+func (i *IstioClient) deleteRoute(path string) error {
+	name := i.virtualServiceNameWithPrefix(path)
+	return i.NetworkingV1alpha3().VirtualServices(i.namespace).Delete(context.Background(), name, v1.DeleteOptions{})
 }
