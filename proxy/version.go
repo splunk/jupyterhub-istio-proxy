@@ -13,14 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
 
-import (
-	"context"
+package proxy
 
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+import "fmt"
+
+var (
+	version   = "dev"
+	commit    = "HEAD"
+	goVersion = "Unknown"
 )
 
-func (i *istioClient) deleteRoute(name string) error {
-	return i.NetworkingV1alpha3().VirtualServices(i.namespace).Delete(context.Background(), name, v1.DeleteOptions{})
+// VersionInfo returns a string representing the version
+func VersionInfo() string {
+	return fmt.Sprintf("Version: %s Commit: %s GoVersion: %s", version, commit, goVersion)
 }

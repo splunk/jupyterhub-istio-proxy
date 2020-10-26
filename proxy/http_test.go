@@ -13,7 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
+
+package proxy
 
 import (
 	"fmt"
@@ -29,21 +30,6 @@ import (
 const (
 	validAuthToken string = "authtoken"
 )
-
-func TestValidateRequired(t *testing.T) {
-	err := validateRequired("a", "val")
-	if err != nil {
-		t.Errorf("Unexpected error %v", err)
-	}
-	err = validateRequired("a", "")
-	if err == nil {
-		t.Fatal("Expected error but found nil")
-	}
-	expected := "missing required param a"
-	if expected != err.Error() {
-		t.Errorf("expected %q, found %q", expected, err.Error())
-	}
-}
 
 func TestPingForbidden(t *testing.T) {
 	var tests = []struct {
@@ -61,7 +47,7 @@ func TestPingForbidden(t *testing.T) {
 	r := gin.Default()
 	mockCtrl := gomock.NewController(t)
 	ic := NewMockistioer(mockCtrl)
-	registerRoutes(r, ic, validAuthToken)
+	RegisterRoutes(r, ic, validAuthToken)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 

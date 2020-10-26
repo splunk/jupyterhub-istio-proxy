@@ -13,30 +13,36 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
+
+package proxy
 
 import (
+	"crypto/sha256"
 	"fmt"
 
 	versionedclient "istio.io/client-go/pkg/clientset/versioned"
 	"k8s.io/client-go/rest"
 )
 
-type istioer interface {
+// Istioer abstracts interactions with the kubernetes API for istio objects
+type Istioer interface {
 	createVirtualService(route) error
 	listRegisteredRoutes() (map[string]interface{}, error)
 	deleteRoute(string) error
 }
 
-type istioClient struct {
+// IstioClient is an implementation of Istioer
+type IstioClient struct {
 	*versionedclient.Clientset
 	gateway       string
 	host          string
 	namespace     string
 	waitForWarmup bool
+	vsNamePrefix  string
 }
 
-func newIstioClient(namespace string, gateway string, host string, waitForWarmup bool) (*istioClient, error) {
+// NewIstioClient returns a new IstioClient
+func NewIstioClient(namespace string, gateway string, host string, waitForWarmup bool, vsNamePrefix string) (*IstioClient, error) {
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
 	if err != nil {
@@ -46,8 +52,17 @@ func newIstioClient(namespace string, gateway string, host string, waitForWarmup
 	if err != nil {
 		return nil, err
 	}
-	return &istioClient{Clientset: ic, namespace: namespace, gateway: gateway, host: host, waitForWarmup: waitForWarmup}, nil
+	return &IstioClient{Clientset: ic, namespace: namespace, gateway: gateway, host: host, waitForWarmup: waitForWarmup, vsNamePrefix: vsNamePrefix}, nil
 }
-func virtualServiceAnnotationNameWithPrefix() string {
-	return fmt.Sprintf("%s.splunk.io/proxy-data", virtualServicePrefix())
+func (c IstioClient) virtualServiceAnnotationNameWithPrefix() string {
+	return fmt.Sprintf("%s.splunk.io/proxy-data", c.virtualServicePrefix())
+}
+
+func (c IstioClient) virtualServicePrefix() string {
+	return c.vsNamePrefix
+}
+
+func (c IstioClient) virtualServiceNameWithPrefix(name string) string {
+	sum := sha256.Sum256([]byte(name))
+	return fmt.Sprintf("%s-%x", c.virtualServicePrefix(), sum)
 }

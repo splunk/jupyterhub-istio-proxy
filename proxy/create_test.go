@@ -13,7 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
+
+package proxy
 
 import (
 	"testing"
@@ -21,7 +22,8 @@ import (
 
 func TestVirtualServiceNameWithPrefix(t *testing.T) {
 	var name = "/"
-	actual := virtualServiceNameWithPrefix(name)
+	ic := IstioClient{vsNamePrefix: "jupyter"}
+	actual := ic.virtualServiceNameWithPrefix(name)
 	expected := "jupyter-8a5edab282632443219e051e4ade2d1d5bbc671c781051bf1437897cbdfea0f1"
 	if expected != actual {
 		t.Errorf("expected %q, found %q", expected, actual)

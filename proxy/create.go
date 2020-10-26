@@ -13,11 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
+
+package proxy
 
 import (
 	"context"
-	"crypto/sha256"
 	"fmt"
 	"log"
 	"net/http"
@@ -36,15 +36,15 @@ const (
 	maxRetries              uint64 = 6
 )
 
-func (i *istioClient) createVirtualService(r route) error {
+func (i *IstioClient) createVirtualService(r route) error {
 	log.Println("creating route: ", r)
-	var annotations, err = annotationForRoute(r)
+	var annotations, err = annotationForRoute(i, r)
 	if err != nil {
 		return err
 	}
 	destinationHost, destinationPort := r.splitTarget()
 	destinationHost = fmt.Sprintf("%s.%s.svc.cluster.local", destinationHost, i.namespace)
-	vsName := virtualServiceNameWithPrefix(r.RouteSpec)
+	vsName := i.virtualServiceNameWithPrefix(r.RouteSpec)
 	vs := virtualService(vsName, i.gateway, i.host, destinationHost, destinationPort, r.RouteSpec, annotations)
 
 	_, err = i.NetworkingV1alpha3().VirtualServices(i.namespace).Create(context.Background(), vs, metav1.CreateOptions{})
@@ -68,29 +68,17 @@ func (i *istioClient) createVirtualService(r route) error {
 	return nil
 }
 
-func virtualServiceNameWithPrefix(name string) string {
-	sum := sha256.Sum256([]byte(name))
-	return fmt.Sprintf("%s-%x", virtualServicePrefix(), sum)
-}
-
-func virtualServicePrefix() string {
-	if vsNamePrefix != "" {
-		return vsNamePrefix
-	}
-	return virtualServicePrefixDefault
-}
-
 func warmupURL(host string, p string) string {
 	return fmt.Sprintf("https://%s/", path.Join(host, p))
 }
 
-func annotationForRoute(r route) (map[string]string, error) {
+func annotationForRoute(i *IstioClient, r route) (map[string]string, error) {
 	var e, err = encodeRoute(r)
 	if err != nil {
 		return nil, err
 	}
 	var m = make(map[string]string)
-	m[virtualServiceAnnotationNameWithPrefix()] = e
+	m[i.virtualServiceAnnotationNameWithPrefix()] = e
 	return m, nil
 }
 
