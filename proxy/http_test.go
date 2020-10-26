@@ -46,7 +46,7 @@ func TestPingForbidden(t *testing.T) {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	mockCtrl := gomock.NewController(t)
-	ic := NewMockistioer(mockCtrl)
+	ic := NewMockIstioer(mockCtrl)
 	RegisterRoutes(r, ic, validAuthToken)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
