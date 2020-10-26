@@ -30,10 +30,6 @@ jobs:
       - name: Test
         run: make test
 
-      # - name: Coverage Report
-      #   run: make publish-coverage
-      #   env:
-      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: goreleaser
         uses: goreleaser/goreleaser-action@master
         with:
