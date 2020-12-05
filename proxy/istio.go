@@ -39,10 +39,11 @@ type IstioClient struct {
 	namespace     string
 	waitForWarmup bool
 	vsNamePrefix  string
+	clusterDomain string
 }
 
 // NewIstioClient returns a new IstioClient
-func NewIstioClient(namespace string, gateway string, host string, waitForWarmup bool, vsNamePrefix string) (*IstioClient, error) {
+func NewIstioClient(namespace string, gateway string, host string, waitForWarmup bool, vsNamePrefix string, clusterDomain string) (*IstioClient, error) {
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
 	if err != nil {
@@ -52,7 +53,7 @@ func NewIstioClient(namespace string, gateway string, host string, waitForWarmup
 	if err != nil {
 		return nil, err
 	}
-	return &IstioClient{Clientset: ic, namespace: namespace, gateway: gateway, host: host, waitForWarmup: waitForWarmup, vsNamePrefix: vsNamePrefix}, nil
+	return &IstioClient{Clientset: ic, namespace: namespace, gateway: gateway, host: host, waitForWarmup: waitForWarmup, vsNamePrefix: vsNamePrefix, clusterDomain: clusterDomain}, nil
 }
 func (c IstioClient) virtualServiceAnnotationNameWithPrefix() string {
 	return fmt.Sprintf("%s.splunk.io/proxy-data", c.virtualServicePrefix())
