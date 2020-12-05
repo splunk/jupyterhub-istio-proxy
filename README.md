@@ -24,7 +24,7 @@ Unlike the default `configurable-http-proxy` that ships with Jupyterhub, the tra
 
 The proxy can be deployed to a Kubernetes namespace running Jupyterhub by applying the following config:
 Change SUB_DOMAIN_HOST to a value to a hostname where jupyterhub is hosted. The ISTIO_GATEWAY value should be set to
-the gateway which handles traffic for jupyterhub.
+the gateway which handles traffic for jupyterhub. If your cluster has a non-default domain, you can specify that with CLUSTER_DOMAIN
 
 ```yaml
 apiVersion: apps/v1
@@ -83,6 +83,8 @@ spec:
               value: jupyterhub
             - name: WAIT_FOR_WARMUP
               value: "true"
+            - name: CLUSTER_DOMAIN
+              value: "cluster.local"
           image: splunk/jupyterhub-istio-proxy:0.0.2
           imagePullPolicy: IfNotPresent
           name: proxy

@@ -43,7 +43,7 @@ func (i *IstioClient) createVirtualService(r route) error {
 		return err
 	}
 	destinationHost, destinationPort := r.splitTarget()
-	destinationHost = fmt.Sprintf("%s.%s.svc.cluster.local", destinationHost, i.namespace)
+	destinationHost = fmt.Sprintf("%s.%s.svc.%s", destinationHost, i.namespace, i.clusterDomain)
 	vsName := i.virtualServiceNameWithPrefix(r.RouteSpec)
 	vs := virtualService(vsName, i.gateway, i.host, destinationHost, destinationPort, r.RouteSpec, annotations)
 

@@ -35,6 +35,7 @@ var gateway string
 var namespace string
 var waitForWarmup bool
 var vsNamePrefix string
+var clusterDomain string
 
 const (
 	gatewayEnvKey               = "ISTIO_GATEWAY"
@@ -44,6 +45,8 @@ const (
 	waitForWarmupKey            = "WAIT_FOR_WARMUP"
 	virtualServicePrefixKey     = "VIRTUAL_SERVICE_PREFIX"
 	virtualServicePrefixDefault = "jupyter"
+	clusterDomainEnvKey         = "CLUSTER_DOMAIN"
+	clusterDomainDefault        = "cluster.local"
 )
 
 func main() {
@@ -76,8 +79,11 @@ func main() {
 	if vsNamePrefix, ok = os.LookupEnv(virtualServicePrefixKey); !ok || vsNamePrefix == "" {
 		vsNamePrefix = virtualServicePrefixDefault
 	}
+	if clusterDomain, ok = os.LookupEnv(clusterDomainEnvKey); !ok || clusterDomain == "" {
+		clusterDomain = clusterDomainDefault
+	}
 	var ic proxy.Istioer
-	ic, err = proxy.NewIstioClient(namespace, gateway, subDomainHost, waitForWarmup, vsNamePrefix)
+	ic, err = proxy.NewIstioClient(namespace, gateway, subDomainHost, waitForWarmup, vsNamePrefix, clusterDomain)
 	if err != nil {
 		log.Fatalf("failed to create istio client: %s\n", err)
 	}
