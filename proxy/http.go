@@ -77,6 +77,12 @@ func RegisterRoutes(r *gin.Engine, ic Istioer, apiToken string) {
 
 func authorizedWithToken(apiToken string) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Ignore /ping handler
+		if c.Request.URL.Path == "/ping" {
+			c.Next()
+			return
+		}
+
 		reqToken := c.Request.Header.Get("Authorization")
 		// Not bearer :o
 		bearerSplit := strings.Split(reqToken, "token ")
