@@ -26,13 +26,13 @@ import (
 
 // RegisterRoutes bootstraps http routes
 func RegisterRoutes(r *gin.Engine, ic Istioer, apiToken string) {
-	authorized := r.Group("/")
-	authorized.Use(authorizedWithToken(apiToken))
-	authorized.GET("/ping", func(c *gin.Context) {
+	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
+
+	authorized := r.Group("/", authorizedWithToken(apiToken))
 	authorized.GET("/api/routes", func(c *gin.Context) {
 		var routes, err = ic.listRegisteredRoutes()
 		if err != nil {

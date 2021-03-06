@@ -31,15 +31,15 @@ const (
 	validAuthToken string = "authtoken"
 )
 
-func TestPingForbidden(t *testing.T) {
+func TestPingNotForbidden(t *testing.T) {
 	var tests = []struct {
 		useHeader       bool
 		authHeaderValue string
 		expectedStatus  int
 	}{
-		{false, "", http.StatusForbidden},
-		{true, "", http.StatusForbidden},
-		{true, "invalid", http.StatusForbidden},
+		{false, "", http.StatusOK},
+		{true, "", http.StatusOK},
+		{true, "invalid", http.StatusOK},
 		{true, validAuthToken, http.StatusOK},
 	}
 	gin.DefaultWriter = ioutil.Discard
