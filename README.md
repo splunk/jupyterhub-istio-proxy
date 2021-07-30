@@ -85,7 +85,7 @@ spec:
               value: "true"
             - name: CLUSTER_DOMAIN
               value: "cluster.local"
-          image: splunk/jupyterhub-istio-proxy:0.1.1
+          image: splunk/jupyterhub-istio-proxy:0.2.0
           imagePullPolicy: IfNotPresent
           name: proxy
           ports:
