@@ -19,10 +19,6 @@ archives:
         format: zip
 dockers:
   - dockerfile: Dockerfile
-    binaries:
-      - jupyterhub-istio-proxy
-    builds:
-      - jupyterhub-istio-proxy
     image_templates:
       - "splunk/jupyterhub-istio-proxy:{{ .Version }}"
 
