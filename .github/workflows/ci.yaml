@@ -13,15 +13,15 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.32
+          version: v1.43
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.15
+      - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15
+          go-version: 1.17
         id: go
 
       - uses: actions/checkout@v2
@@ -33,7 +33,7 @@ jobs:
         run: make test
 
       - name: Test coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
 
       - name: goreleaser
         uses: goreleaser/goreleaser-action@v2
