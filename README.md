@@ -85,7 +85,7 @@ spec:
               value: "true"
             - name: CLUSTER_DOMAIN
               value: "cluster.local"
-          image: splunk/jupyterhub-istio-proxy:0.2.0
+          image: splunk/jupyterhub-istio-proxy:0.3.0
           imagePullPolicy: IfNotPresent
           name: proxy
           ports:
@@ -126,7 +126,7 @@ Jupyterhub user pod creation flow when using `jupyterhub-istio-proxy`.
 
 ## Dev Setup
 
-The project requires Go 1.15.3+. Run the tests
+The project requires Go 1.17.3+. Run the tests
 
 ```bash
 make test
