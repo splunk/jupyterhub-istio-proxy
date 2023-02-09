@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/cenkalti/backoff/v4 v4.0.2
-	github.com/gin-gonic/gin v1.7.0
+	github.com/gin-gonic/gin v1.7.7
 	github.com/golang/mock v1.4.4
 	istio.io/api v0.0.0-20200817160544-291eb3ba8ada
 	istio.io/client-go v0.0.0-20200817160837-c5f8590ec455
