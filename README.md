@@ -2,6 +2,14 @@
 
 `jupyterhub-istio-proxy` is a scalable solution for Jupyterhub's high network traffic demands. It implements the jupyterhub proxy api to configure istio based on requests from hub.
 
+---
+
+> :warning:&ensp;**DEPRECATION NOTICE**  
+As of February 3rd, 2025:  
+This image will be archived from GitHub and Docker Hub in 15 days. (Latest Release v0.3.0).  
+
+---
+
 The following requests are supported:
 1. `GET /api/routes`: Gets all routes that have been configured on istio
 2. `POST /api/routes/<path>`: Add the route to istio
