@@ -9,7 +9,7 @@ As of June 24th, 2025:
 >   - ~ 30 days for DockerHub Image Removal -> https://hub.docker.com/repository/docker/splunk/jupyterhub-istio-proxy/general
 > - Maintenance:
 >   - Anyone actively using this code please Fork it.
->   - Anyone intererested in maintaining the Repository, raise a Pull Request for CODEOWNERS.
+>   - Anyone interested in maintaining the Repository, raise a Pull Request for CODEOWNERS.
 >     - We will then proceed to review the request internally.
 
 ---
